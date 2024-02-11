@@ -1,0 +1,12 @@
+.vscode/
+.idea/
+.idea
+.vscode
+*.class
+*.xml
+.mypy/
+.mypy_chache/
+.cache/
+.mypy
+.mypy_chache
+.cache
