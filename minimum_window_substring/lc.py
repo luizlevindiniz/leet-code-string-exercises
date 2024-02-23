@@ -2,10 +2,14 @@ class Solution:
     def minWindow(self, s: str, t: str) -> str:
         n = len(s)
         m = len(t)
+
         letters_in_t: dict = {}
+        letters_in_s: dict = {}
+
         start = 0
-        substring_to_return = s
-        hasChanged = False
+
+        ans = [-1, -1]
+        len_of_ans = 10**6
 
         # edge case
         if m > n:
@@ -15,33 +19,33 @@ class Solution:
         for letter in t:
             letters_in_t[letter] = 1 + letters_in_t.get(letter, 0)
 
-        # getting start position
-        for letter in s:
-            if letter not in letters_in_t:
-                start += 1
-            else:
-                break
+        have = 0
+        need = sum(letters_in_t.values())
 
         # loop in s
-        for end in range(start, n):
-            if s[end] in letters_in_t:
-                letters_in_t[s[end]] -= 1
+        for end in range(0, n):
+            letter = s[end]
+            if letter in letters_in_t:
+                letters_in_s[letter] = 1 + letters_in_s.get(letter, 0)
 
-            while all(x <= 0 for x in letters_in_t.values()) and start <= end:
-                substring = s[start : end + 1]
-                hasChanged = True
-                if len(substring) < len(substring_to_return):
-                    substring_to_return = substring
-                if s[start] in letters_in_t:
-                    letters_in_t[s[start]] += 1
+                if letters_in_s[letter] <= letters_in_t[letter]:
+                    have += 1
+
+            while have == need:
+                if end - start + 1 < len_of_ans:
+                    ans = [start, end]
+                    len_of_ans = end - start + 1
+                letter = s[start]
+                if letter in letters_in_s:
+                    if letters_in_s[letter] == letters_in_t[letter]:
+                        have -= 1
+                    letters_in_s[letter] -= 1
+
                 start += 1
 
-        if hasChanged:
-            return substring_to_return
-        return ""
+        return "" if ans == [-1, -1] else s[ans[0] : ans[1] + 1]
 
 
 if __name__ == "__main__":
     s = Solution()
-    print(s.minWindow("bcdefggg", "a"))
-    print(s.minWindow("cabwefgewcwaefgcf", "cae"))
+    print(s.minWindow("bbaa", "aba"))
